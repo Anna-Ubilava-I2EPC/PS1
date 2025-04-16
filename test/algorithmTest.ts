@@ -9,49 +9,7 @@ import {
   computeProgress,
 } from "../src/algorithm";
 
-// randomly generated flashcards about TS
-// const fc0 = new Flashcard(
-//   "What does `as` do?",
-//   "Performs a type assertion.",
-//   "Used to tell TypeScript the value’s type.",
-//   ["type-assertion"]
-// );
-
-// const fc1 = new Flashcard(
-//   "How to define a union?",
-//   "Use `|`, like `string | number`.",
-//   "Unions allow multiple types.",
-//   ["types", "union"]
-// );
-
-// const fc2 = new Flashcard(
-//   "What is `readonly`?",
-//   "Makes a property immutable.",
-//   "You can set it only once.",
-//   ["modifiers", "readonly"]
-// );
-
-// const fc3 = new Flashcard(
-//   "`interface` vs `type`?",
-//   "`interface` is for objects; `type` is flexible.",
-//   "Both define types; one’s broader.",
-//   ["interface", "type-alias"]
-// );
-
-// const fc4 = new Flashcard(
-//   "Optional property syntax?",
-//   "Use `?`, like `age?: number`.",
-//   "Marks the property as optional.",
-//   ["interface", "syntax"]
-// );
-
-// const fc5 = new Flashcard(
-//   "What is type inference?",
-//   "TS guesses the type.",
-//   "Happens when no type is declared.",
-//   ["inference"]
-// );
-
+// randrom flashcards
 const fc0 = new Flashcard("Q0", "A0", "H0", []);
 const fc1 = new Flashcard("Q1", "A1", "H1", []);
 const fc2 = new Flashcard("Q2", "A2", "H2", []);
