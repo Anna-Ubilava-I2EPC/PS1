@@ -25,7 +25,7 @@ const fc5 = new Flashcard("Q5", "A5", "H5", []);
  * 2. buckets with consecutive indices (0,1,2,...)
  * 3. buckets with non-consecutive indices (0,2,3,5...) -> empty sets for left out buckets
  * 4. Buckets with empty sets
- * 5. Only one bucket with one flasshcard
+ * 5. Only one bucket with one flashcard
  * 6. one bucket with multiple flashcars.
  * 7. multiple buckets with multiple flashcards.
  */
@@ -111,14 +111,119 @@ describe("toBucketSets()", () => {
 /*
  * Testing strategy for getBucketRange():
  *
- * TODO: Describe your testing strategy for getBucketRange() here.
+ *Partitions:
+ 1. [] empty array as an input (no buckets); -> undefined
+ 2. [Set(), Set()] - empty bucket(s); -> undefined
+ 3. [Set([fc])]- one non-empty bucket; return {0:0}
+ 4. [Set([fc]), Set(), Set()] multiple buckets with non-empty bucket at start; 
+ 5. [Set(), Set([fc]), Set()] multiple buckets with non-empty bucket in the middle; 
+ 6. [Set(), Set(), Set([fc])] multiple buckets with non-empty bucket at end; 
+ 7. [Set([fc1]), Set(), Set([fc2])] multiple non-empty buckets.
+ 8. [Set([fc1]), Set(), Set(), Set([fc2])]  Non-empty buckets at the edges, empty in the middle
+ 9. all non empty buckets
+
  */
 describe("getBucketRange()", () => {
-  it("Example test case - replace with your own tests", () => {
-    assert.fail(
-      "Replace this test case with your own tests based on your testing strategy"
-    );
+  // partition 1: []
+  it("range is undefined for an empty array", () => {
+    assert.deepStrictEqual(getBucketRange([]), undefined);
   });
+
+  // partition 2: empty bucket(s)
+  it("range is undefined when all buckets are empty ", () => {
+    const buckets = [
+      new Set<Flashcard>(),
+      new Set<Flashcard>(),
+      new Set<Flashcard>(),
+    ];
+    // const buckets: Set<Flashcard>[] = [new Set(), new Set(), new Set()];
+    assert.deepStrictEqual(getBucketRange(buckets), undefined);
+  });
+
+  // partition 3: single non-empty bucket
+  it("finds range for a single non-empty bucket", () => {
+    const buckets = [new Set<Flashcard>([fc0, fc1])];
+    assert.deepStrictEqual(getBucketRange(buckets), {
+      minBucket: 0,
+      maxBucket: 0,
+    });
+  });
+
+  // partition 4:  non-empty bucket only at start
+  it("finds range when only first bucket is non-empty", () => {
+    const buckets: Set<Flashcard>[] = [new Set([fc0]), new Set(), new Set()];
+
+    assert.deepStrictEqual(getBucketRange(buckets), {
+      minBucket: 0,
+      maxBucket: 0,
+    });
+  });
+
+  // partition 5:  non-empty bucket only in middle
+  it("finds range when only middle bucket is non-empty", () => {
+    const buckets: Set<Flashcard>[] = [new Set(), new Set([fc0]), new Set()];
+
+    assert.deepStrictEqual(getBucketRange(buckets), {
+      minBucket: 1,
+      maxBucket: 1,
+    });
+  });
+
+  // partition 6:  non-empty bucket only at end
+  it("finds range when only last bucket is non-empty", () => {
+    const buckets: Set<Flashcard>[] = [new Set(), new Set(), new Set([fc0])];
+
+    assert.deepStrictEqual(getBucketRange(buckets), {
+      minBucket: 2,
+      maxBucket: 2,
+    });
+  });
+
+  // partition 7:  multiple non-empty buckets.
+  it("finds range for multiple non-empty buckets", () => {
+    const buckets: Set<Flashcard>[] = [
+      new Set(),
+      new Set(),
+      new Set([fc0]),
+      new Set(),
+      new Set([fc3]),
+    ];
+
+    assert.deepStrictEqual(getBucketRange(buckets), {
+      minBucket: 2,
+      maxBucket: 4,
+    });
+  });
+
+  // partition 8: Non-empty buckets only at the edges
+  it("finds range when non-empty buckets are only at the edges", () => {
+    const buckets: Set<Flashcard>[] = [
+      new Set([fc0]),
+      new Set(),
+      new Set(),
+      new Set([fc3]),
+    ];
+
+    assert.deepStrictEqual(getBucketRange(buckets), {
+      minBucket: 0,
+      maxBucket: 3,
+    });
+  });
+
+  // partition 9: all non-empty buckets
+  it("finds range when all buckets are non-empty", () => {
+    const buckets: Set<Flashcard>[] = [
+      new Set([fc0]),
+      new Set([fc2]),
+      new Set([fc3]),
+    ];
+
+    assert.deepStrictEqual(getBucketRange(buckets), {
+      minBucket: 0,
+      maxBucket: 2,
+    });
+  });
+  
 });
 
 /*
