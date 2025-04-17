@@ -16,6 +16,7 @@ const fc2 = new Flashcard("Q2", "A2", "H2", []);
 const fc3 = new Flashcard("Q3", "A3", "H3", []);
 const fc4 = new Flashcard("Q4", "A4", "H4", []);
 const fc5 = new Flashcard("Q5", "A5", "H5", []);
+const fc6 = new Flashcard("Q6", "A6", "H6", []);
 
 /*
  * Testing strategy for toBucketSets():
@@ -223,19 +224,87 @@ describe("getBucketRange()", () => {
       maxBucket: 2,
     });
   });
-  
 });
 
 /*
  * Testing strategy for practice():
  *
- * TODO: Describe your testing strategy for practice() here.
+ * partitions:
+ * 1. empty array
+ * 2. all empty buckets
+ * 3. day 0 (first day) with only bucket0 nonempty
+ * 4. day 0 with multiple nonempty buckets
+ * 5. day 1
+ * 6. day 2 (only 0 is practiced when day is even number)
+ * 7. day 15 and bucket 4 is the retired bucket (even though it is the 2^4th day, only 0, 1, 2, 3 are included)
+ *
  */
 describe("practice()", () => {
-  it("Example test case - replace with your own tests", () => {
-    assert.fail(
-      "Replace this test case with your own tests based on your testing strategy"
-    );
+  it("returns empty set for an empty array of buckets", () => {
+    const buckets: Array<Set<Flashcard>> = [];
+    assert.deepStrictEqual(practice(buckets, 0), new Set<Flashcard>());
+  });
+
+  it("returns empty set for an array of all empty buckets", () => {
+    const buckets: Array<Set<Flashcard>> = [new Set(), new Set(), new Set()];
+    assert.deepStrictEqual(practice(buckets, 0), new Set<Flashcard>());
+  });
+
+  it("selects flashcards in an only non-empty bucket0 on day0 ", () => {
+    const buckets: Array<Set<Flashcard>> = [
+      new Set([fc0, fc1]),
+      new Set(),
+      new Set(),
+    ];
+    const actual = practice(buckets, 0);
+    const expected = new Set([fc0, fc1]);
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("selects flashcards in bucket0 on day0 from multiple non-empty buckets ", () => {
+    const buckets: Array<Set<Flashcard>> = [
+      new Set([fc0, fc1]),
+      new Set([fc2]),
+      new Set([fc3]),
+    ];
+    const actual = practice(buckets, 0);
+    const expected = new Set([fc0, fc1]);
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("selects flashcards from buckets 0 and 1 on day1 ", () => {
+    const buckets: Array<Set<Flashcard>> = [
+      new Set([fc0, fc1]),
+      new Set([fc2]),
+      new Set([fc3]),
+    ];
+
+    const expected = new Set([fc0, fc1]);
+    assert.deepStrictEqual(practice(buckets, 0), expected);
+  });
+
+  it("selects flashcards from bucket 0 on day2 (or eny k'th day when k is odd (so day is even)", () => {
+    const buckets: Array<Set<Flashcard>> = [
+      new Set([fc0, fc1]),
+      new Set([fc2]),
+      new Set([fc3]),
+    ];
+
+    const expected = new Set([fc0, fc1]);
+    assert.deepStrictEqual(practice(buckets, 0), expected);
+  });
+
+  it("does not select flashcards from a retired bucket4 even at the 2^4th day)  ", () => {
+    const buckets: Array<Set<Flashcard>> = [
+      new Set([fc0, fc1]),
+      new Set([fc2]),
+      new Set([fc3]),
+      new Set([fc4, fc5]),
+      new Set([fc6]),
+    ];
+
+    const expected = new Set([fc0, fc1, fc2, fc3, fc4, fc5]);
+    assert.deepStrictEqual(practice(buckets, 15), expected);
   });
 });
 

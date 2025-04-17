@@ -98,8 +98,19 @@ export function practice(
   buckets: Array<Set<Flashcard>>,
   day: number
 ): Set<Flashcard> {
-  // TODO: Implement this function
-  throw new Error("Implement me!");
+  const practiceSet = new Set<Flashcard>();
+
+  const retiredBucketIndex = buckets.length - 1;
+
+  for (let i = 0; i < retiredBucketIndex; i++) {
+    // since the numbering of days starts from 0, every n'th practice day will be day:n-1
+    if ((day + 1) % Math.pow(2, i) === 0) {
+      for (const flashcard of buckets[i]!) {
+        practiceSet.add(flashcard);
+      }
+    }
+  }
+  return practiceSet;
 }
 
 /**
