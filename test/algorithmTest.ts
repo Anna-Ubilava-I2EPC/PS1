@@ -311,12 +311,118 @@ describe("practice()", () => {
 /*
  * Testing strategy for update():
  *
- * TODO: Describe your testing strategy for update() here.
+ * Partitions:
+ * 1. card is in bucket 0; Wrong; stays in 0
+ * 2. card is in bucket>0; Wrong; moved to bucket0
+ * 3. card is in bucket 0; Hard; stays in bucket 0 (can’t go lower)
+ * 4. card is in bucket>0; Hard; moves to bucket i-1
+ * 5. card is in retired bucket; Easy; stays there
+ * 6. card is in any other bucket; Easy; moves to bucket i+1
+ * 7. card is not found in any bucket; throws an error
+ * 8. buckets is empty; throws an error
+ * 9. multiple cards in a bucket; only the right card is moved
+ *
  */
 describe("update()", () => {
-  it("Example test case - replace with your own tests", () => {
-    assert.fail(
-      "Replace this test case with your own tests based on your testing strategy"
+  const buckets: BucketMap = new Map([
+    [0, new Set([fc0])],
+    [1, new Set([fc3])],
+    [2, new Set([fc4])],
+  ]);
+
+  //1
+  it("card is in bucket 0; Wrong; stays in 0", () => {
+    assert.deepStrictEqual(
+      update(buckets, fc0, 0),
+      buckets
+    );
+  });
+
+  //2
+  it("card is in bucket>0; Wrong; moved to bucket0", () => {
+    const expected: BucketMap = new Map([
+      [0, new Set([fc0, fc4])],
+      [1, new Set([fc3])],
+      [2, new Set()],
+    ]);
+    assert.deepStrictEqual(
+      update(buckets, fc4, 0),
+      expected
+    );
+  });
+
+  //3
+  it("card is in bucket 0; Hard; stays in bucket 0 ", () => {
+    assert.deepStrictEqual(
+      update(buckets, fc0, 1),
+      buckets
+    );
+  });
+
+  //4
+  it("card is in bucket>0; Hard; moves to bucket i-1", () => {
+    const expected: BucketMap = new Map([
+      [0, new Set([fc0])],
+      [1, new Set([fc3, fc4])],
+      [2, new Set()],
+    ]);
+
+    assert.deepStrictEqual(
+      update(buckets, fc4, 1),
+      expected
+    );
+  });
+
+  //5
+  it("card is in retired bucket; Easy; stays there", () => {
+    assert.deepStrictEqual(
+      update(buckets, fc4, 2),
+      buckets
+    );
+  });
+
+  //6
+  it("card is in any other bucket; Easy; moves to bucket i+1", () => {
+    const expected: BucketMap = new Map([
+      [0, new Set()],
+      [1, new Set([fc0, fc3])],
+      [2, new Set([fc4])],
+    ]);
+
+    assert.deepStrictEqual(
+      update(buckets, fc0, 2),
+      expected
+    );
+  });
+
+  //7
+  it("throws an error when card is not found in any bucket", () => {
+    assert.throws(() => update(buckets, fc6, 0));
+  });
+
+  //8
+  it("throws an error when buckets is empty ", () => {
+    const buckets: BucketMap = new Map();
+    assert.throws(() => update(buckets, fc0, 0));
+  });
+
+  //9
+  it("only the current card is moved when there are multiple cards in a bucket; ", () => {
+    const buckets: BucketMap = new Map([
+      [0, new Set([fc0, fc1, fc2])],
+      [1, new Set([fc3, fc6])],
+      [2, new Set([fc4, fc5])],
+    ]);
+
+    const expected: BucketMap = new Map([
+      [0, new Set([fc0, fc2])],
+      [1, new Set([fc1, fc3, fc6])],
+      [2, new Set([fc4, fc5])],
+    ]);
+
+    assert.deepStrictEqual(
+      update(buckets, fc1, 2),
+      expected
     );
   });
 });

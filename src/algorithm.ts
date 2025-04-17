@@ -127,8 +127,45 @@ export function update(
   card: Flashcard,
   difficulty: AnswerDifficulty
 ): BucketMap {
-  // TODO: Implement this function
-  throw new Error("Implement me!");
+  // clone the original map
+  const updatedBuckets: BucketMap = new Map();
+  for (const [bucket, set] of buckets.entries()) {
+    updatedBuckets.set(bucket, new Set(set));
+  }
+
+  // find current bucket which has the flashcard
+  let currentBucket = -1;
+  for (const [bucket, cardSet] of updatedBuckets.entries()) {
+    if (cardSet.has(card)) {
+      currentBucket = bucket;
+      cardSet.delete(card); // remove the card from current bucket
+      break;
+    }
+  }
+
+  if (currentBucket === -1) {
+    throw new Error("no bucket contains this card");
+  }
+
+  const maxBucket = Math.max(...buckets.keys());
+
+  // pick new bucket based on difficulty
+  let newBucket = currentBucket;
+  if (difficulty === AnswerDifficulty.Wrong) {
+    newBucket = 0;
+  } else if (difficulty === AnswerDifficulty.Hard) {
+    newBucket = Math.max(0, currentBucket - 1);
+  } else if (difficulty === AnswerDifficulty.Easy) {
+    newBucket = Math.min(currentBucket + 1, maxBucket);
+  }
+
+  // add the card to the new bucket
+  if (!buckets.has(newBucket)) {
+    updatedBuckets.set(newBucket, new Set());
+  }
+  updatedBuckets.get(newBucket)!.add(card);
+
+  return updatedBuckets;
 }
 
 /**
