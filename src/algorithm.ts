@@ -188,7 +188,7 @@ export function getHint(card: Flashcard): string {
 
   // if no hint available: use a start substring of the answer as hint
   const trimmedBack = card.back.trim();
-  if (trimmedBack.length === 0) return "(no hint available)";
+  if (trimmedBack.length === 0) return "no hint available";
 
   const previewLength = Math.min(5, trimmedBack.length);
   return `Starts with '${trimmedBack.slice(0, previewLength)}'`;

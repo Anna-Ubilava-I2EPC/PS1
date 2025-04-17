@@ -13,8 +13,8 @@ import {
 const fc0 = new Flashcard("Q0", "A0", "", []);
 const fc1 = new Flashcard("Q1", "A1", "H1", []);
 const fc2 = new Flashcard("Q2", "A2", " %#&* hehe^_^", []);
-const fc3 = new Flashcard("Q3", "A3", "H3: Some random sentence.", []);
-const fc4 = new Flashcard("Q4:card with empty hint", "A4", "", []);
+const fc3 = new Flashcard("Q3", "A3", "H3", []);
+const fc4 = new Flashcard("Q4", "A4", "", []);
 const fc5 = new Flashcard("Q5", "", "", []);
 const fc6 = new Flashcard("Q6", "A6", "H6", []);
 
@@ -413,6 +413,8 @@ describe("update()", () => {
  * 1.a card has an available hint; it is used
  * 2.Hint with special characters and spaces
  * 3.hint is empty; uses a part of the answer as a hint
+ * 4.hint is empty and answer is short
+ * 5.answer and hint are both empty.
  *
  */
 describe("getHint()", () => {
@@ -432,6 +434,17 @@ describe("getHint()", () => {
   it("uses a part of the answer as a hint when card.hint is empty; ", () => {
     const card = new Flashcard("Capital of Georgia?", "Tbilisi", "", []);
     assert.strictEqual(getHint(card), "Starts with 'Tbili'");
+  });
+
+  //4
+  it("handles short answers when hint is empty", () => {
+    const card = new Flashcard("What century is it now?", "21", "", []);
+    assert.strictEqual(getHint(card), "Starts with '21'");
+  });
+
+  //5
+  it("handles empty answer and hint", () => {
+    assert.strictEqual(getHint(fc5), "no hint available");
   });
 });
 
