@@ -169,14 +169,29 @@ export function update(
 }
 
 /**
- * Generates a hint for a flashcard.
+ * Generates a helpful hint for a flashcard.
+ *
+ * If the flashcard.hint is non-empty, it is returned as the hint
+ * otherwise, reveal first few characters of the answer as a hint
+ * For the same flashcard, consistent output is guaranateed.
  *
  * @param card flashcard to hint
- * @returns a hint for the front of the flashcard.
+ * @returns a helpful deterministic hint string
  * @spec.requires card is a valid Flashcard.
+ * @spec.ensures result is card.hint if card.hint !== ""
+ * @spec.ensures result is a non-empty substring of card.back if card.hint is ""
  */
 export function getHint(card: Flashcard): string {
-  return card.hint;
+  if (card.hint !== "") {
+    return card.hint;
+  }
+
+  // if no hint available: use a start substring of the answer as hint
+  const trimmedBack = card.back.trim();
+  if (trimmedBack.length === 0) return "(no hint available)";
+
+  const previewLength = Math.min(5, trimmedBack.length);
+  return `Starts with '${trimmedBack.slice(0, previewLength)}'`;
 }
 
 /**

@@ -13,9 +13,9 @@ import {
 const fc0 = new Flashcard("Q0", "A0", "", []);
 const fc1 = new Flashcard("Q1", "A1", "H1", []);
 const fc2 = new Flashcard("Q2", "A2", " %#&* hehe^_^", []);
-const fc3 = new Flashcard("Q3", "A3", "H3", []);
-const fc4 = new Flashcard("Q4", "A4", "H4", []);
-const fc5 = new Flashcard("Q5", "A5", "H5", []);
+const fc3 = new Flashcard("Q3", "A3", "H3: Some random sentence.", []);
+const fc4 = new Flashcard("Q4:card with empty hint", "A4", "", []);
+const fc5 = new Flashcard("Q5", "", "", []);
 const fc6 = new Flashcard("Q6", "A6", "H6", []);
 
 /*
@@ -410,22 +410,28 @@ describe("update()", () => {
  * Testing strategy for getHint():
  *
  * Partitions:
- * 1.Hint is an empty string; returns ""
- * 2.Hint is a regular string
- * 3.Hint with special characters and spaces
+ * 1.a card has an available hint; it is used
+ * 2.Hint with special characters and spaces
+ * 3.hint is empty; uses a part of the answer as a hint
  *
  */
 describe("getHint()", () => {
-  it("returns an empty string when hint is empty", () => {
-    assert.strictEqual(getHint(fc0), "");
-  });
-
+  //some tests from weak getHint()
+  //1
   it("returns a string when hint is regular string", () => {
     assert.strictEqual(getHint(fc1), "H1");
   });
 
+  //2
   it("handles a hint with special characters and spaces", () => {
     assert.strictEqual(getHint(fc2), " %#&* hehe^_^");
+  });
+
+  // new tests for strong spec
+  //3
+  it("uses a part of the answer as a hint when card.hint is empty; ", () => {
+    const card = new Flashcard("Capital of Georgia?", "Tbilisi", "", []);
+    assert.strictEqual(getHint(card), "Starts with 'Tbili'");
   });
 });
 
