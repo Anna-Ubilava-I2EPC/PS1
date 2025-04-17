@@ -10,9 +10,9 @@ import {
 } from "../src/algorithm";
 
 // randrom flashcards
-const fc0 = new Flashcard("Q0", "A0", "H0", []);
+const fc0 = new Flashcard("Q0", "A0", "", []);
 const fc1 = new Flashcard("Q1", "A1", "H1", []);
-const fc2 = new Flashcard("Q2", "A2", "H2", []);
+const fc2 = new Flashcard("Q2", "A2", " %#&* hehe^_^", []);
 const fc3 = new Flashcard("Q3", "A3", "H3", []);
 const fc4 = new Flashcard("Q4", "A4", "H4", []);
 const fc5 = new Flashcard("Q5", "A5", "H5", []);
@@ -332,10 +332,7 @@ describe("update()", () => {
 
   //1
   it("card is in bucket 0; Wrong; stays in 0", () => {
-    assert.deepStrictEqual(
-      update(buckets, fc0, 0),
-      buckets
-    );
+    assert.deepStrictEqual(update(buckets, fc0, 0), buckets);
   });
 
   //2
@@ -345,18 +342,12 @@ describe("update()", () => {
       [1, new Set([fc3])],
       [2, new Set()],
     ]);
-    assert.deepStrictEqual(
-      update(buckets, fc4, 0),
-      expected
-    );
+    assert.deepStrictEqual(update(buckets, fc4, 0), expected);
   });
 
   //3
   it("card is in bucket 0; Hard; stays in bucket 0 ", () => {
-    assert.deepStrictEqual(
-      update(buckets, fc0, 1),
-      buckets
-    );
+    assert.deepStrictEqual(update(buckets, fc0, 1), buckets);
   });
 
   //4
@@ -367,18 +358,12 @@ describe("update()", () => {
       [2, new Set()],
     ]);
 
-    assert.deepStrictEqual(
-      update(buckets, fc4, 1),
-      expected
-    );
+    assert.deepStrictEqual(update(buckets, fc4, 1), expected);
   });
 
   //5
   it("card is in retired bucket; Easy; stays there", () => {
-    assert.deepStrictEqual(
-      update(buckets, fc4, 2),
-      buckets
-    );
+    assert.deepStrictEqual(update(buckets, fc4, 2), buckets);
   });
 
   //6
@@ -389,10 +374,7 @@ describe("update()", () => {
       [2, new Set([fc4])],
     ]);
 
-    assert.deepStrictEqual(
-      update(buckets, fc0, 2),
-      expected
-    );
+    assert.deepStrictEqual(update(buckets, fc0, 2), expected);
   });
 
   //7
@@ -420,23 +402,30 @@ describe("update()", () => {
       [2, new Set([fc4, fc5])],
     ]);
 
-    assert.deepStrictEqual(
-      update(buckets, fc1, 2),
-      expected
-    );
+    assert.deepStrictEqual(update(buckets, fc1, 2), expected);
   });
 });
 
 /*
  * Testing strategy for getHint():
  *
- * TODO: Describe your testing strategy for getHint() here.
+ * Partitions:
+ * 1.Hint is an empty string; returns ""
+ * 2.Hint is a regular string
+ * 3.Hint with special characters and spaces
+ *
  */
 describe("getHint()", () => {
-  it("Example test case - replace with your own tests", () => {
-    assert.fail(
-      "Replace this test case with your own tests based on your testing strategy"
-    );
+  it("returns an empty string when hint is empty", () => {
+    assert.strictEqual(getHint(fc0), "");
+  });
+
+  it("returns a string when hint is regular string", () => {
+    assert.strictEqual(getHint(fc1), "H1");
+  });
+
+  it("handles a hint with special characters and spaces", () => {
+    assert.strictEqual(getHint(fc2), " %#&* hehe^_^");
   });
 });
 
